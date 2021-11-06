@@ -11,7 +11,7 @@ namespace SbSTanks
             var timerController = new TimerController();
             mainController.Add(timerController);
 
-            var stepController = new StepController(data.Enemies, timerController);
+            var stepController = new StepController(data.Enemies, timerController, data);
             mainController.Add(stepController);
 
             new ParticlesInitialization(data.Player, data.Enemies);

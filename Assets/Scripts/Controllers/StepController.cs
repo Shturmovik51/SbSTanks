@@ -1,4 +1,5 @@
 using System;
+using TMPro;
 using UnityEngine;
 
 namespace SbSTanks
@@ -13,11 +14,17 @@ namespace SbSTanks
         private bool _isDelay = false;
         private Enemy[] _enemies;
         private TimerController _timerController;
+        private int _currentEnemyTurnIndex;
+        private int _step;
+        private TextMeshProUGUI _stepText;
 
-        public StepController(Enemy[] enemies, TimerController timerController)
+        public StepController(Enemy[] enemies, TimerController timerController, GameInitializationData data)
         {
             _enemies = enemies;
             _timerController = timerController;
+            _stepText = data.StepPanelText;
+            _stepText.text = (_step + 1).ToString();
+
         }
 
         public void EnemiesTurn()
@@ -42,12 +49,18 @@ namespace SbSTanks
                 if (_endTurnTimer.IsTimerEnd)
                 {
                     isPlayerTurn = true;
-                    for (int i = 0; i < _enemies.Length; i++)
-                    {
-                        _enemies[i].isShotReturn = false;
-                    }
+                    //for (int i = 0; i < _enemies.Length; i++)
+                    //{
+                    //    _enemies[i].isShotReturn = false;
+                    //}
+
                     _endTurnTimer = null;
                     _isDelay = false;
+
+                    if(_currentEnemyTurnIndex == 0)
+                    {
+                        _stepText.text = (_step + 1).ToString();
+                    }
                 }
                 _startTurnTimer = null;
             }
@@ -73,19 +86,45 @@ namespace SbSTanks
                 {
                     for (int i = 0; i < _enemies.Length; i++)
                     {
-                        if (!_isDelay && !_enemies[i].isShotReturn && i < _enemies.Length - 1)
-                        {
-                            _shotDelayTimer = new TimerData(1f, Time.time);
-                            EnemyShot(i, _shotDelayTimer);
-                        }
-                        else if (!_isDelay && i == _enemies.Length - 1)
+                        //if (!_isDelay && !_enemies[i].isShotReturn && i < _enemies.Length - 1)
+                        //{
+                        //    _shotDelayTimer = new TimerData(1f, Time.time);
+                        //    EnemyShot(i, _shotDelayTimer);
+                        //}
+                        //else if (!_isDelay && i == _enemies.Length - 1)
+                        //{
+                        //    _endTurnTimer = new TimerData(4f, Time.time);
+                        //    EnemyShot(i, _endTurnTimer);
+                        //}    
+                        
+                        if(i == _currentEnemyTurnIndex)
                         {
                             _endTurnTimer = new TimerData(4f, Time.time);
                             EnemyShot(i, _endTurnTimer);
-                        }
+                        }                      
+
+                    }
+
+                    _currentEnemyTurnIndex++;
+
+                    if (_currentEnemyTurnIndex > _enemies.Length - 1)
+                    {
+                        StartNewTurn();
                     }
                 }
             }
+        }
+
+        private void StartNewTurn()
+        {
+            for (int i = 0; i < _enemies.Length; i++)
+            {
+                _enemies[i].isShotReturn = false;
+            }
+
+            _currentEnemyTurnIndex = 0;
+            _step++;
+           // _stepText.text = (_step + 1).ToString();
         }
 
         private void EnemyShot(int index, TimerData timer)

@@ -24,5 +24,20 @@ namespace SbSTanks
             shellRb.AddForce(shell.transform.forward * SHOT_FORCE, ForceMode.Impulse);
             _hitStatus = true;
         }
+
+        public void FireElementShoot()
+        {
+
+        }
+
+        public void GroundElementShoot()
+        {
+
+        }
+
+        public void WaterElementShoot()
+        {
+
+        }
     }
 }
