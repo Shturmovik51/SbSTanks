@@ -7,6 +7,7 @@ namespace SbSTanks
     {
         public Action<int> TakeDamage { get; set; }
         public Action OnChangeElement;
+        public Transform UnitTransform { get; private set; }
         public Action<GameObject, IDamagebleUnit> ShellHit { get; set; }
 
         [SerializeField] protected UnitParameters _parameters;
@@ -27,6 +28,7 @@ namespace SbSTanks
             _parameters = new UnitParameters(this, data.hp, data.damage, newElement);
             _shellController = shellController;
             _stepController = stepController;
+            UnitTransform = this.Transform;
         }
 
         protected abstract void OnCollisionEnter(Collision collision);

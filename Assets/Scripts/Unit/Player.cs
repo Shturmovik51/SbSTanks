@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -7,6 +8,8 @@ namespace SbSTanks
    // [RequireComponent(typeof(Animator))]
     public class Player : Unit
     {
+        public event Action OnGetRandomTarget;
+
         private bool _hitStatus = false;
         public bool GetHitStatus { get => _hitStatus; set => _hitStatus = value; }
 
@@ -16,43 +19,36 @@ namespace SbSTanks
             _shellController.ReturnShell(collision.gameObject);
         }
 
-        public void Shot()
+        public void Shot(ParticleSystem shootEffect)
         {
-            var shell = _shellController.GetShell(_parameters.Damage, _shotStartPoint, _parameters.Element);
-            var shellRb = shell.GetComponent<Rigidbody>();
-
-            shellRb.AddForce(shell.transform.forward * SHOT_FORCE, ForceMode.Impulse);
-            _hitStatus = true;
-
             switch (Parameters.Element.EntityElement)
             {
                 case (ElementType.FireElement):
-                    FireElementShoot();
+                    Debug.Log("FireShoot");
+                    LaunchShell(shootEffect);
                     break;
                 case (ElementType.GroundElement):
-                    GroundElementShoot();
+                    Debug.Log("GroundShoot");
+                    OnGetRandomTarget.Invoke();
                     break;
                 case (ElementType.WaterElement):
-                    WaterElementShoot();
+                    Debug.Log("WaterShoot");
+                    LaunchShell(shootEffect);
                     break;
                 default:
                     throw new System.Exception("Косяк с элементами");
             }
         }
 
-        public void FireElementShoot()
+        public void LaunchShell(ParticleSystem shootEffect)
         {
-            Debug.Log("Fire");
-        }
+            Debug.Log("Shot!!!!");
+            shootEffect.Play();
+            var shell = _shellController.GetShell(_parameters.Damage, _shotStartPoint, _parameters.Element);
+            var shellRb = shell.GetComponent<Rigidbody>();
 
-        public void GroundElementShoot()
-        {
-            Debug.Log("Ground");
-        }
-
-        public void WaterElementShoot()
-        {
-            Debug.Log("Water");
+            shellRb.AddForce(shell.transform.forward * SHOT_FORCE, ForceMode.Impulse);
+            _hitStatus = true;
         }
     }
 }

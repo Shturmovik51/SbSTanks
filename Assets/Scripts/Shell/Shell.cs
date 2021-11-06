@@ -20,7 +20,7 @@ namespace SbSTanks
         {
             _shellObject = shellObject;
             _shellPositionInPool = shellObject.transform.position;
-            _shellHeight = shellObject.GetComponent<CapsuleCollider>().height;
+            _shellHeight = shellObject.GetComponent<CapsuleCollider>().height;            
         }
     }
 }

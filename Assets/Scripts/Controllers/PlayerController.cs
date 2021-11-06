@@ -8,10 +8,14 @@ namespace SbSTanks
 {
     public class PlayerController : IExecute, IDisposable
     {
+        public event Action<ParticleSystem> OnLaunchShell;
+
         private PlayerModel _playerModel;
         private StepController _stepController;
         private Dictionary<Button, Enemy> _switchEnemyButtonsMatching = new Dictionary<Button, Enemy>();
+        private List<Button> _switchEnemyButtons;
         private bool _isOnRotation;
+        private bool _isOnRandomRotation;
         private Quaternion _targetRotation;
 
         private const float ROTATION_TIME = 0.5f;
@@ -22,6 +26,7 @@ namespace SbSTanks
             _stepController = stepController;
             _playerModel = model;
             _playerModel.GetpcInputSpace.OnSpaceDown += GetSpaceKey;
+            _switchEnemyButtons = switchEnemyButtons;
 
             for (int i = 0; i < enemies.Length; i++)
             {
@@ -39,7 +44,17 @@ namespace SbSTanks
                         _lerpProgress = 0; 
                     });
             }
+
+            _playerModel.GetPlayer.OnGetRandomTarget += GetRandomTarget;
+            OnLaunchShell += _playerModel.GetPlayer.LaunchShell;
         }
+
+        public void GetRandomTarget()
+        {
+            _switchEnemyButtons[UnityEngine.Random.Range(0, (_switchEnemyButtons.Count-1))].onClick.Invoke();
+            _isOnRandomRotation = true;
+        }
+
 
         public void GetSpaceKey(bool f)
         {
@@ -51,9 +66,8 @@ namespace SbSTanks
             if (_stepController.isPlayerTurn && _playerModel.IsSpaceDown)
             {
                 _stepController.isPlayerTurn = false;
-                Debug.Log("Shot!!!!");
-                _playerModel.GetShotEvent.Play();
-                _playerModel.GetPlayer.Shot();
+                
+                _playerModel.GetPlayer.Shot(_playerModel.GetShotEvent);
             }
             if (_isOnRotation)
             {
@@ -70,6 +84,11 @@ namespace SbSTanks
             {
                 _isOnRotation = false;
                 _lerpProgress = 0;
+                if (_isOnRandomRotation)
+                {
+                    _isOnRandomRotation = false;
+                    OnLaunchShell.Invoke(_playerModel.GetShotEvent);
+                }
             }
         }
 
@@ -78,7 +97,12 @@ namespace SbSTanks
             foreach (var element in _switchEnemyButtonsMatching)
             {
                 element.Key.onClick.RemoveAllListeners();
+
             }
+
+            _playerModel.GetpcInputSpace.OnSpaceDown -= GetSpaceKey;
+            _playerModel.GetPlayer.OnGetRandomTarget -= GetRandomTarget;
+            OnLaunchShell -= _playerModel.GetPlayer.LaunchShell;
         }
     }
 }

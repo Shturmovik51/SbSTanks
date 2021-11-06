@@ -17,6 +17,9 @@ namespace SbSTanks
         private const int SHELLS_COUNT = 5;
         private const float NEW_SHELL_OFFSET = 0.5f;
         private const float X_ROTATE_IN_FLY = 0.7f;
+        private const float EXPLOSION_RADIUS = 10f;
+        private const int TWICE_DAMAGE_MULTIPLIER = 2;
+        private const int NORMAL_DAMAGE_MULTIPLIER = 1;
 
         public List<Shell> Shells { get => _shells; }
 
@@ -99,30 +102,20 @@ namespace SbSTanks
         }
 
         private void InflictDamage(GameObject shell, IDamagebleUnit unit)
-        {
+        {            
             for (int i = 0; i < _shells.Count; i++)
             {
+                var damageElement = _shells[i].Element.EntityElement;
+                var targetElement = unit.Parameters.Element.EntityElement;
+
                 if (shell.GetInstanceID() == _shells[i].ShellObject.GetInstanceID())
                 {
-                    if(_shells[i].Element.EntityElement == ElementType.FireElement)                                      //TODO вынести ифовую портянку в класс
+                    if (damageElement == ElementType.FireElement)                                      //TODO вынести ифовую портянку в класс
                     {
-                        if(unit.Parameters.Element.EntityElement == ElementType.FireElement)
-                        {
-                            unit.TakingDamage(_shells[i].damage);
-                        }
-
-                        if(unit.Parameters.Element.EntityElement == ElementType.WaterElement)
-                        {
-                            unit.TakingDamage(_shells[i].damage);
-                        }
-
-                        if (unit.Parameters.Element.EntityElement == ElementType.GroundElement)
-                        {
-                            unit.TakingDamage(_shells[i].damage * 2);
-                        }
+                        unit.TakingDamage(_shells[i].damage * DamageMultiplier(damageElement, targetElement));                        
                     }
 
-                    if (_shells[i].Element.EntityElement == ElementType.GroundElement)                                      
+                    if (damageElement == ElementType.GroundElement)
                     {
                         if (unit.Parameters.Element.EntityElement == ElementType.FireElement)
                         {
@@ -140,27 +133,32 @@ namespace SbSTanks
                         }
                     }
 
-                    if (_shells[i].Element.EntityElement == ElementType.WaterElement)                                      
+                    if (damageElement == ElementType.WaterElement)
                     {
-                        if (unit.Parameters.Element.EntityElement == ElementType.FireElement)
-                        {
-                            unit.TakingDamage(_shells[i].damage * 2);
-                        }
+                        var hits = Physics.OverlapSphere(unit.UnitTransform.position, EXPLOSION_RADIUS);
 
-                        if (unit.Parameters.Element.EntityElement == ElementType.WaterElement)
+                        for (int j = 0; j < hits.Length; j++)
                         {
-                            unit.TakingDamage(_shells[i].damage);
-                        }
-
-                        if (unit.Parameters.Element.EntityElement == ElementType.GroundElement)
-                        {
-                            unit.TakingDamage(_shells[i].damage);
-                        }
+                            if (hits[j].gameObject.TryGetComponent(out IDamagebleUnit dUnit))
+                            {
+                                dUnit.TakingDamage(_shells[i].damage * DamageMultiplier(damageElement, targetElement));
+                            }
+                        }                        
                     }
-
+                    
                     break;
                 }
             }
+        }
+
+        public int DamageMultiplier(ElementType damageElement, ElementType targetElement)
+        {
+            if (damageElement == ElementType.FireElement && targetElement == ElementType.GroundElement ||
+                damageElement == ElementType.WaterElement && targetElement == ElementType.FireElement ||
+                damageElement == ElementType.GroundElement && targetElement == ElementType.WaterElement)
+                return TWICE_DAMAGE_MULTIPLIER;
+            else
+                return NORMAL_DAMAGE_MULTIPLIER;            
         }
 
         public void ReturnShell(GameObject shell)
