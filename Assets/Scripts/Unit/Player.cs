@@ -18,7 +18,7 @@ namespace SbSTanks
 
         public void Shot()
         {
-            var shell = _shellController.GetShell(_parameters.Damage, _shotStartPoint);
+            var shell = _shellController.GetShell(_parameters.Damage, _shotStartPoint, _parameters.Element);
             var shellRb = shell.GetComponent<Rigidbody>();
 
             shellRb.AddForce(shell.transform.forward * SHOT_FORCE, ForceMode.Impulse);

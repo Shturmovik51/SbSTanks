@@ -24,7 +24,7 @@ namespace SbSTanks
         public void ReturnShot()
         { 
 
-            var shell = _shellController.GetShell(_parameters.Damage, _shotStartPoint);
+            var shell = _shellController.GetShell(_parameters.Damage, _shotStartPoint, _parameters.Element);
             var shellRb = shell.GetComponent<Rigidbody>();
             _shotEnemy.Play();
 

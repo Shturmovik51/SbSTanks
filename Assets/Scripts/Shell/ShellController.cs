@@ -57,7 +57,7 @@ namespace SbSTanks
             }
         }
 
-        public GameObject GetShell(int damage, Transform startPosition)
+        public GameObject GetShell(int damage, Transform startPosition, Element element)
         {
             GameObject shellObject = null;
 
@@ -68,6 +68,7 @@ namespace SbSTanks
                     shellObject = _shells[i].ShellObject;
                     _shells[i].damage = damage;
                     _shells[i].isOnScene = true;
+                    _shells[i].Element = element;
                     break;
                 }
             }
@@ -103,7 +104,60 @@ namespace SbSTanks
             {
                 if (shell.GetInstanceID() == _shells[i].ShellObject.GetInstanceID())
                 {
-                    unit.TakingDamage(_shells[i].damage);
+                    if(_shells[i].Element.EntityElement == ElementType.FireElement)                                      //TODO вынести ифовую портянку в класс
+                    {
+                        if(unit.Parameters.Element.EntityElement == ElementType.FireElement)
+                        {
+                            unit.TakingDamage(_shells[i].damage);
+                        }
+
+                        if(unit.Parameters.Element.EntityElement == ElementType.WaterElement)
+                        {
+                            unit.TakingDamage(_shells[i].damage);
+                        }
+
+                        if (unit.Parameters.Element.EntityElement == ElementType.GroundElement)
+                        {
+                            unit.TakingDamage(_shells[i].damage * 2);
+                        }
+                    }
+
+                    if (_shells[i].Element.EntityElement == ElementType.GroundElement)                                      
+                    {
+                        if (unit.Parameters.Element.EntityElement == ElementType.FireElement)
+                        {
+                            unit.TakingDamage(_shells[i].damage);
+                        }
+
+                        if (unit.Parameters.Element.EntityElement == ElementType.WaterElement)
+                        {
+                            unit.TakingDamage(_shells[i].damage * 2);
+                        }
+
+                        if (unit.Parameters.Element.EntityElement == ElementType.GroundElement)
+                        {
+                            unit.TakingDamage(_shells[i].damage);
+                        }
+                    }
+
+                    if (_shells[i].Element.EntityElement == ElementType.WaterElement)                                      
+                    {
+                        if (unit.Parameters.Element.EntityElement == ElementType.FireElement)
+                        {
+                            unit.TakingDamage(_shells[i].damage * 2);
+                        }
+
+                        if (unit.Parameters.Element.EntityElement == ElementType.WaterElement)
+                        {
+                            unit.TakingDamage(_shells[i].damage);
+                        }
+
+                        if (unit.Parameters.Element.EntityElement == ElementType.GroundElement)
+                        {
+                            unit.TakingDamage(_shells[i].damage);
+                        }
+                    }
+
                     break;
                 }
             }

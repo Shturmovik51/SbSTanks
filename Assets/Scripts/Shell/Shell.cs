@@ -8,6 +8,7 @@ namespace SbSTanks
         private Vector3 _shellPositionInPool;
         private float _shellHeight;
 
+        public Element Element;
         public int damage;
         public bool isOnScene;
 

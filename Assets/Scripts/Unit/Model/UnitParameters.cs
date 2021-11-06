@@ -26,6 +26,7 @@ namespace SbSTanks
         public void GetDamage(int damage)
         {
             _hp -= damage;
+            Debug.Log(_hp);
         }
 
         public void ChangeElement()
