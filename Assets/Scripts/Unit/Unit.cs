@@ -6,6 +6,7 @@ namespace SbSTanks
     public abstract class Unit : MonoBehaviour, IDamagebleUnit, IUnit
     {
         public Action<int> TakeDamage { get; set; }
+        public Action OnChangeElement;
         public Action<GameObject, IDamagebleUnit> ShellHit { get; set; }
 
         [SerializeField] protected UnitParameters _parameters;
@@ -22,7 +23,8 @@ namespace SbSTanks
 
         public void Init(UnitInitializationData data, ShellController shellController, StepController stepController)
         {
-            _parameters = new UnitParameters(this, data.hp, data.damage);
+            var newElement = new Element();
+            _parameters = new UnitParameters(this, data.hp, data.damage, newElement);
             _shellController = shellController;
             _stepController = stepController;
         }
@@ -33,6 +35,11 @@ namespace SbSTanks
         {
             Debug.Log("Auch!");
             TakeDamage?.Invoke(damage);
+        }
+
+        public void ChangingElement()
+        {
+            OnChangeElement?.Invoke();
         }
     }
 }
