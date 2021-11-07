@@ -36,7 +36,7 @@ namespace SbSTanks
                     LaunchShell(shootEffect);
                     break;
                 default:
-                    throw new System.Exception("Косяк с элементами");
+                    throw new Exception("Косяк с элементами");
             }
         }
 

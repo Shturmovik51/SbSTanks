@@ -1,4 +1,5 @@
 using System;
+using TMPro;
 using UnityEngine;
 
 namespace SbSTanks
@@ -23,15 +24,18 @@ namespace SbSTanks
             unit.OnChangeElement += ChangeElement;
         }
 
-        public void GetDamage(int damage)
+        public void GetDamage(int damage, TextMeshProUGUI healthText)
         {
             _hp -= damage;
+            healthText.text = _hp.ToString();
             Debug.Log(_hp);
         }
 
-        public void ChangeElement()
+        public void ChangeElement(TextMeshProUGUI elementText)
         {
             _element.UpdateElement();
+            elementText.text = _element.EntityElement.ToString();
+            Debug.Log("Change");
         }
     }
 }

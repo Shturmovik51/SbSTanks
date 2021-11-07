@@ -110,27 +110,14 @@ namespace SbSTanks
 
                 if (shell.GetInstanceID() == _shells[i].ShellObject.GetInstanceID())
                 {
-                    if (damageElement == ElementType.FireElement)                                      //TODO вынести ифовую портянку в класс
+                    if (damageElement == ElementType.FireElement)                                      
                     {
                         unit.TakingDamage(_shells[i].damage * DamageMultiplier(damageElement, targetElement));                        
                     }
 
                     if (damageElement == ElementType.GroundElement)
                     {
-                        if (unit.Parameters.Element.EntityElement == ElementType.FireElement)
-                        {
-                            unit.TakingDamage(_shells[i].damage);
-                        }
-
-                        if (unit.Parameters.Element.EntityElement == ElementType.WaterElement)
-                        {
-                            unit.TakingDamage(_shells[i].damage * 2);
-                        }
-
-                        if (unit.Parameters.Element.EntityElement == ElementType.GroundElement)
-                        {
-                            unit.TakingDamage(_shells[i].damage);
-                        }
+                        unit.TakingDamage(_shells[i].damage * DamageMultiplier(damageElement, targetElement));
                     }
 
                     if (damageElement == ElementType.WaterElement)
@@ -139,9 +126,10 @@ namespace SbSTanks
 
                         for (int j = 0; j < hits.Length; j++)
                         {
-                            if (hits[j].gameObject.TryGetComponent(out IDamagebleUnit dUnit))
+                            if (hits[j].gameObject.TryGetComponent(out IDamagebleUnit currentUnit))
                             {
-                                dUnit.TakingDamage(_shells[i].damage * DamageMultiplier(damageElement, targetElement));
+                                var currentTargetElement = currentUnit.Parameters.Element.EntityElement;
+                                currentUnit.TakingDamage(_shells[i].damage * DamageMultiplier(damageElement, currentTargetElement));
                             }
                         }                        
                     }

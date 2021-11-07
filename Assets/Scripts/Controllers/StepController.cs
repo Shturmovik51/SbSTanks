@@ -13,18 +13,19 @@ namespace SbSTanks
         private TimerData _endTurnTimer;
         private bool _isDelay = false;
         private Enemy[] _enemies;
+        private Player _player;
         private TimerController _timerController;
         private int _currentEnemyTurnIndex;
         private int _step;
         private TextMeshProUGUI _stepText;
 
-        public StepController(Enemy[] enemies, TimerController timerController, GameInitializationData data)
+        public StepController(Enemy[] enemies, Player player, TimerController timerController, GameInitializationData data)
         {
             _enemies = enemies;
             _timerController = timerController;
             _stepText = data.StepPanelText;
             _stepText.text = (_step + 1).ToString();
-
+            _player = player;
         }
 
         public void EnemiesTurn()
@@ -60,6 +61,7 @@ namespace SbSTanks
                     if(_currentEnemyTurnIndex == 0)
                     {
                         _stepText.text = (_step + 1).ToString();
+                        UpdateUnitElements();
                     }
                 }
                 _startTurnTimer = null;
@@ -113,6 +115,16 @@ namespace SbSTanks
                     }
                 }
             }
+        }
+
+        private void UpdateUnitElements()
+        {
+            foreach (var enemy in _enemies)
+            {
+                enemy.ChangingElement();
+            }
+
+            _player.ChangingElement();
         }
 
         private void StartNewTurn()

@@ -14,6 +14,7 @@ namespace SbSTanks
         [SerializeField] private UnitInitializationData _playerInitializationData;
         [SerializeField] private UnitInitializationData _enemyInitializationData;
         [SerializeField] private List<Button> _enemiesSwitchButtons;
+        [SerializeField] private List<TextMeshProUGUI> HPValues;
         [SerializeField] private TextMeshProUGUI _stepPanelText;
 
         public Player Player { get => _player; }
