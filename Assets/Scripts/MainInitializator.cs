@@ -9,10 +9,8 @@ namespace SbSTanks
             var uiModel = new UIModel();
 
             var timerController = new TimerController();
-            mainController.Add(timerController);
 
             var stepController = new StepController(data.Enemies, data.Player, timerController, data);
-            mainController.Add(stepController);
 
             new ParticlesInitialization(data.Player, data.Enemies);
             var pcinputinitialization = new PCInputSpaceInitialization();
@@ -22,8 +20,17 @@ namespace SbSTanks
             new TimerSetsInitialization(playerModel, timerActionInvoker);
 
             var shellController = new ShellController(data.Player, data.Enemies);
-            mainController.Add(shellController);
 
+            var skillButtonFactory = new SkillButtonsFactory(data.SkillButtons, data.SkillButtonsConfig);
+
+            var skillButtonStateController = new SkillButtonStateController(skillButtonFactory.GetSkillButtons());
+            
+
+
+
+            mainController.Add(timerController);
+            mainController.Add(stepController);
+            mainController.Add(shellController);
             mainController.Add(new InputController(pcinputinitialization.GetInputSpace()));
             mainController.Add(new PlayerController(playerModel, stepController, uiModel, data.Enemies, data.EnemiesSwitchButtons));
             mainController.Add(new ButtonActivationController(uiModel, stepController));
