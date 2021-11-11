@@ -4,13 +4,15 @@ using UnityEngine;
 
 namespace SbSTanks
 {
-    public class SkillButtonStateController
+    public class SkillButtonActiveStateController
     {
         private List<SkillButton> _skillButtons;
-
-        public SkillButtonStateController(List<SkillButton> skillButtons)
+        private Element _playerElement;
+        private SkillButton _activeButton;
+        public SkillButtonActiveStateController(List<SkillButton> skillButtons, Player player)
         {
             _skillButtons = skillButtons;
+            _playerElement = player.Parameters.Element;
 
             foreach (var button in _skillButtons)
             {
@@ -20,13 +22,14 @@ namespace SbSTanks
 
         public SkillButton GetActiveButton()
         {
-            SkillButton activeButton = null;
-            foreach (var button in _skillButtons)
-            {
-                if (button.IsActive)
-                    activeButton = button;
-            }
-            return activeButton;
+            //SkillButton activeButton = null;
+            //foreach (var button in _skillButtons)
+            //{
+            //    if (button.IsActive)
+            //        activeButton = button;
+            //}
+            ResetButtonsState();
+            return _activeButton;
         }
 
         private void SetActiveState(SkillButton button)
@@ -35,10 +38,15 @@ namespace SbSTanks
 
             button.IsActive = true;
             button.Button.image.color = Color.green;
+            _playerElement.SetElementType(button.ElementType);
+
+            _activeButton = button;
         }
 
         public void ResetButtonsState()
         {
+            _playerElement.DeactivateElement();
+
             foreach (var button in _skillButtons)
             {
                 button.IsActive = false;

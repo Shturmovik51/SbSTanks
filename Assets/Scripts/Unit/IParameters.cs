@@ -1,4 +1,6 @@
-﻿namespace SbSTanks
+﻿using UnityEngine;
+
+namespace SbSTanks
 {
     public interface IParameters
     {

@@ -21,7 +21,7 @@ namespace SbSTanks
 
         public void Shot(ParticleSystem shootEffect)
         {
-            switch (Parameters.Element.EntityElement)
+            switch (_parameters.Element.EntityElement)
             {
                 case (ElementType.FireElement):
                     Debug.Log("FireShoot");

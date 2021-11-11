@@ -27,6 +27,10 @@ namespace SbSTanks
         public void GetDamage(int damage, TextMeshProUGUI healthText)
         {
             _hp -= damage;
+
+            if (_hp < 0)
+                _hp = 0;
+
             healthText.text = _hp.ToString();
             Debug.Log(_hp);
         }

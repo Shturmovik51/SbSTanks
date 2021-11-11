@@ -9,6 +9,7 @@ namespace SbSTanks
         private float _shellHeight;
 
         public Element Element;
+        //public ElementType ElementType;
         public int damage;
         public bool isOnScene;
 

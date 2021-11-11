@@ -21,27 +21,32 @@ namespace SbSTanks
 
             var shellController = new ShellController(data.Player, data.Enemies);
 
-            var skillButtonFactory = new SkillButtonsFactory(data.SkillButtons, data.SkillButtonsConfig);
-
-            var skillButtonStateController = new SkillButtonStateController(skillButtonFactory.GetSkillButtons());
-            
-
-
-
-            mainController.Add(timerController);
-            mainController.Add(stepController);
-            mainController.Add(shellController);
-            mainController.Add(new InputController(pcinputinitialization.GetInputSpace()));
-            mainController.Add(new PlayerController(playerModel, stepController, uiModel, data.Enemies, data.EnemiesSwitchButtons));
-            mainController.Add(new ButtonActivationController(uiModel, stepController));
-            
-
             for (int i = 0; i < data.Enemies.Length; i++)
             {
                 data.Enemies[i].Init(data.EnemyInitializationData, shellController, stepController);
             }
             
             data.Player.Init(data.PlayerInitializationData, shellController, stepController);
+
+            var skillButtonFactory = new SkillButtonsFactory(data.SkillButtonObjects, data.SkillButtonsConfig);
+
+            var skillButtonStateController = new SkillButtonActiveStateController(skillButtonFactory.GetSkillButtons(), data.Player);
+            var skillButtonCDController = new SkillButtonCDStateController(skillButtonStateController, stepController);
+
+            var playerController = new PlayerController(playerModel, stepController, uiModel, data.Enemies, 
+                                            data.EnemiesSwitchButtons, skillButtonCDController);
+
+            var endScreenController = new EndScreenController(data.EndScreenData, stepController);
+
+
+            mainController.Add(timerController);
+            mainController.Add(stepController);
+            mainController.Add(shellController);
+            mainController.Add(new InputController(pcinputinitialization.GetInputSpace()));
+            mainController.Add(playerController);
+            mainController.Add(new ButtonActivationController(uiModel, stepController));
+            
+
         }
     }
 }

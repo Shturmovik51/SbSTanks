@@ -5,23 +5,24 @@ namespace SbSTanks
 {
     public class SkillButtonsFactory
     {
-        private Button[] _buttons;
+        private SkillButtonObjects[] _skillButtonObjects;
         private SkillButtonsConfig _skillButtonConfig;
         private List<SkillButton> _skillButtons;
 
-        public SkillButtonsFactory(Button[] buttons, SkillButtonsConfig skillButtonConfig)
+        public SkillButtonsFactory(SkillButtonObjects[] skillButtonObjects, SkillButtonsConfig skillButtonConfig)
         {
-            _buttons = buttons;
+            _skillButtonObjects = skillButtonObjects;
             _skillButtonConfig = skillButtonConfig;
-            _skillButtons = new List<SkillButton>(_buttons.Length);
+            _skillButtons = new List<SkillButton>(_skillButtonObjects.Length);
         }
 
         public List<SkillButton> GetSkillButtons()
         {
-            for (int i = 0; i < _buttons.Length; i++)
+            for (int i = 0; i < _skillButtonObjects.Length; i++)
             {
                 var parameters = _skillButtonConfig.SkillButtonsParameters[i];
-                var skillButton = new SkillButton(_buttons[i], parameters.CoolDown, parameters.Description, parameters.ElementType);
+                var skillButton = new SkillButton(_skillButtonObjects[i].Button, _skillButtonObjects[i].CDImage, 
+                        parameters.CoolDown, parameters.Description, parameters.ElementType, _skillButtonObjects[i].CDText);
 
                 _skillButtons.Add(skillButton);
             }

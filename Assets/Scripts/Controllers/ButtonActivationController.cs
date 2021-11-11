@@ -22,15 +22,15 @@ namespace SbSTanks
         }
         public void Execute(float deltaTime)
         {
-            if(_stepController.isPlayerTurn != _isPreviousPlayerTurn)
-            {
-                for (int i = 0; i< _canvasButtons.Count; i++)
-                {
-                    _canvasButtons[i].interactable = !_canvasButtons[i].interactable;
+            //if(_stepController.isPlayerTurn != _isPreviousPlayerTurn)
+            //{
+            //    for (int i = 0; i< _canvasButtons.Count; i++)
+            //    {
+            //        _canvasButtons[i].interactable = !_canvasButtons[i].interactable;
 
-                }
-                _isPreviousPlayerTurn = !_isPreviousPlayerTurn;
-            }
+            //    }
+            //    _isPreviousPlayerTurn = !_isPreviousPlayerTurn;
+            //}
         }
     }
 }

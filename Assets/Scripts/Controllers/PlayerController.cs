@@ -16,16 +16,19 @@ namespace SbSTanks
         private bool _isOnRotation;
         private bool _isOnRandomRotation;
         private Quaternion _targetRotation;
+        private SkillButtonCDStateController _skillButtonCDStateController;
 
         private const float ROTATION_TIME = 0.5f;
         private float _lerpProgress = 0;
         private Quaternion _startRotation;
-        public PlayerController(PlayerModel model, StepController stepController, UIModel uIModel, Enemy[] enemies, List<Button> switchEnemyButtons)
+        public PlayerController(PlayerModel model, StepController stepController, UIModel uIModel, Enemy[] enemies, 
+                    List<Button> switchEnemyButtons, SkillButtonCDStateController skillButtonCDStateController)
         {
             _stepController = stepController;
             _playerModel = model;
             _playerModel.GetpcInputSpace.OnSpaceDown += GetSpaceKey;
             _switchEnemyButtons = switchEnemyButtons;
+            _skillButtonCDStateController = skillButtonCDStateController;
 
             for (int i = 0; i < enemies.Length; i++)
             {
@@ -64,9 +67,13 @@ namespace SbSTanks
         {
             if (_stepController.isPlayerTurn && _playerModel.IsSpaceDown)
             {
+                if (!_playerModel.GetPlayer.Parameters.Element.IsActive)
+                    return;
+
                 _stepController.isPlayerTurn = false;
                 
                 _playerModel.GetPlayer.Shot(_playerModel.GetShotEvent);
+                _skillButtonCDStateController.AddButtonToCDList();
             }
             if (_isOnRotation)
             {
